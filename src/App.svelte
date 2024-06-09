@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte';
-  import { Button, Spinner, Toast } from 'flowbite-svelte'
+  import { Button, Spinner, Toast, Badge } from 'flowbite-svelte'
   import { ExclamationCircleSolid } from 'flowbite-svelte-icons';
   import OvenPlayer from "./lib/OvenPlayer.svelte";
   import Landing from "./lib/Landing.svelte";
@@ -46,12 +46,33 @@
 
     counter = 10;
     timeout();
+
+    startViewerCountUpdate(); // Start updating the viewer count
   }
 
   function timeout() {
     if (--counter > 0) return setTimeout(timeout, 1000);
     toastVisible = false;
   }
+
+  let viewerCount = 0;
+
+  async function fetchViewerCount() {
+    try {
+      const response = await fetch(`https://v.zj.is/v?stream=${streamName}`);
+      const data = await response.json();
+      viewerCount = data.viewers;
+    } catch (error) {
+      console.error('Error fetching viewer count:', error);
+    }
+  }
+
+  function startViewerCountUpdate() {
+    fetchViewerCount();
+    setInterval(fetchViewerCount, 2500);
+  }
+
+
 
   //$: videoUrl = `wss://v.zj.is/app/${streamName}?transport=tcp`;
 
@@ -74,13 +95,16 @@
 
   {#if playerReady}
     <div class="toast-container">
-      <Toast color="orange" bind:open={toastVisible} transition={fade} >
+      <Toast color="orange" bind:open={toastVisible} transition={fade}>
         <svelte:fragment slot="icon">
           <ExclamationCircleSolid class="w-5 h-5" />
           <span class="sr-only">Warning</span>
         </svelte:fragment>
         ↓ Unmute here ↓
       </Toast>
+    </div>
+    <div class="badge-container">
+      <Badge dismissable border color="red">{viewerCount} Viewers</Badge>
     </div>
   {/if}
 </main>
@@ -122,6 +146,13 @@
     position: absolute;
     bottom: 7vh;
     left: 20px;
+    z-index: 9999;
+  }
+
+  .badge-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
     z-index: 9999;
   }
 </style>
