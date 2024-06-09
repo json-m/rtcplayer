@@ -20,6 +20,7 @@
     "vite-plugin-singlefile": "^2.0.1"
   },
   "dependencies": {
+    "flowbite-svelte-icons": "^1.6.1",
     "ovenlivekit": "^1.2.0",
     "ovenplayer": "^0.10.35",
     "svelte-preprocess": "^5.1.4"

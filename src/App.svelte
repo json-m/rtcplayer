@@ -1,9 +1,11 @@
 <script>
   import { onMount } from 'svelte';
-  import { Button, Spinner } from 'flowbite-svelte'
+  import { Button, Spinner, Toast } from 'flowbite-svelte'
+  import { ExclamationCircleSolid } from 'flowbite-svelte-icons';
   import OvenPlayer from "./lib/OvenPlayer.svelte";
   import Landing from "./lib/Landing.svelte";
   import Capture from "./lib/Capture.svelte";
+  import {fade} from "svelte/transition";
 
   let streamName = ''; // Initialize with an empty string
   let streamExists = true;
@@ -34,6 +36,23 @@
     }
   });
 
+  let playerReady = false;
+  let toastVisible = true;
+
+  let counter = 10;
+  function handlePlayerReady() {
+    playerReady = true;
+    toastVisible = true; // Show the toast when the player is ready
+
+    counter = 10;
+    timeout();
+  }
+
+  function timeout() {
+    if (--counter > 0) return setTimeout(timeout, 1000);
+    toastVisible = false;
+  }
+
   //$: videoUrl = `wss://v.zj.is/app/${streamName}?transport=tcp`;
 
 </script>
@@ -42,19 +61,27 @@
   {#if loading}
     <div><Button color="dark"><Spinner class="me-3" size="4" />Loading ...</Button></div>
   {:else if streamName && streamExists}
-    <!-- Wrapper element for sizing or positioning the player -->
     <div class="player-wrapper">
-      <!-- OvenPlayer will be initialized inside this element. -->
       <div id="player_id">
-        <OvenPlayer {streamName} autoplay={true} muted={true} />
+        <OvenPlayer {streamName} autoplay={true} muted={true} onReady={handlePlayerReady} />
       </div>
     </div>
   {:else if streamName && !streamExists}
-    <!-- Show the capture window component when the stream doesn't exist -->
     <Capture {streamName} />
   {:else}
-    <!-- Show a different component when no stream name is set -->
     <Landing />
+  {/if}
+
+  {#if playerReady}
+    <div class="toast-container">
+      <Toast color="orange" bind:open={toastVisible} transition={fade} >
+        <svelte:fragment slot="icon">
+          <ExclamationCircleSolid class="w-5 h-5" />
+          <span class="sr-only">Warning</span>
+        </svelte:fragment>
+        ↓ Unmute here ↓
+      </Toast>
+    </div>
   {/if}
 </main>
 
@@ -89,5 +116,12 @@
     left: 0;
     width: 100%;
     height: 100%;
+  }
+
+  .toast-container {
+    position: absolute;
+    bottom: 7vh;
+    left: 20px;
+    z-index: 9999;
   }
 </style>

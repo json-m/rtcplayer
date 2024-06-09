@@ -9,6 +9,7 @@
     export let controls = true;
     export let width = '100%';
     export let height = '400px';
+    export let onReady = () => {};
 
     let player;
 
@@ -32,6 +33,7 @@
                 mute: muted,
                 controls: controls,
             });
+            onReady(); // Call the onReady prop when the player is ready
         };
     });
 </script>
