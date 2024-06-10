@@ -16,25 +16,18 @@
     document.title = `Stream - ${streamName}`
 
     onMount(() => {
-        const script = document.createElement('script');
-        script.src = 'https://cdn.jsdelivr.net/npm/ovenplayer@0.10.0/dist/ovenplayer.js';
-        script.async = true;
-        document.body.appendChild(script);
-
-        script.onload = () => {
-            player = OvenPlayer.create('player', {
-                sources: [
-                    {
-                        type: 'mp4',
-                        file: `wss://v.zj.is/app/${streamName}?transport=tcp`,
-                    },
-                ],
-                autoStart: autoplay,
-                mute: muted,
-                controls: controls,
-            });
-            onReady(); // Call the onReady prop when the player is ready
-        };
+        player = OvenPlayer.create('player', {
+            sources: [
+                {
+                    type: 'mp4',
+                    file: `wss://v.zj.is/app/${streamName}?transport=tcp`,
+                },
+            ],
+            autoStart: autoplay,
+            mute: muted,
+            controls: controls,
+        });
+        onReady(); // Call the onReady prop when the player is ready
     });
 </script>
 
