@@ -30,7 +30,12 @@
                 channelCount: 2,
                 volume: 1.0
             },
-            video: true
+            video: {
+                frameRate: {
+                    ideal: 60,
+                    max: 60,
+                },
+            },
         }).then(function (stream) {
             mediaStream = stream; // Store the MediaStream object
             // set your OvenMediaEngine's WebRTC Provider URL
@@ -100,7 +105,6 @@
                 console.error('Error fetching status:', error);
                 status = 'OFFLINE';
                 clearInterval(updateStatsInterval);
-                // Handle the error, e.g., display an error message to the user
             });
     };
 
