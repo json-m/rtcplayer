@@ -128,10 +128,14 @@
     align-items: center;
   }
 
+
   .player-wrapper {
     position: relative;
     width: 100%;
-    padding-top: 56.25%; /* 16:9 aspect ratio (9 / 16 = 0.5625) */
+    height: 100%;
+    max-width: 177.78vh; /* Calculated based on 16:9 aspect ratio (16 / 9 = 1.7778) */
+    max-height: 56.25vw; /* Calculated based on 16:9 aspect ratio (9 / 16) */
+    margin: auto;
   }
 
   #player_id {
@@ -140,6 +144,7 @@
     left: 0;
     width: 100%;
     height: 100%;
+    object-fit: contain;
   }
 
   .toast-container {
